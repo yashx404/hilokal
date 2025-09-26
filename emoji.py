@@ -1,0 +1,40 @@
+import requests
+
+cookies = {
+    '_hjSessionUser_2705208': 'eyJpZCI6IjdlZTUyNDRiLWMwMTktNTdhZC1hZTgxLTBmNDEyMTcwMjMzNSIsImNyZWF0ZWQiOjE3NTYwNDM3NTAyNzAsImV4aXN0aW5nIjp0cnVlfQ==',
+    '_ga': 'GA1.1.1367245081.1756042971',
+    '__gads': 'ID=eded4002ba3dc0c8:T=1756043799:RT=1756044632:S=ALNI_MYDCOW1q2hwU0wV2dzaj8IaEJbJIQ',
+    '__gpi': 'UID=0000118571550dd1:T=1756043799:RT=1756044632:S=ALNI_MayaYzVKlXD_wdDH6Y8qtGjIvQfAw',
+    '__eoi': 'ID=b4e687cbf17c5c29:T=1756043799:RT=1756044632:S=AA-AfjaKydIwmCI0r1FtabbiTp-Q',
+    '_ga_S97T9P1W73': 'GS2.1.s1756042970$o1$g1$t1756044798$j11$l0$h0',
+    '_ga_6HCL2GMXBV': 'GS2.1.s1756042971$o1$g1$t1756044798$j11$l0$h0',
+    'jwt': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMDU4OTc0IiwiaWF0IjoxNzU4NjM1MjM1fQ.NWKCUK9qtGONz8rzdL-Nv2haiggJLuK-8vFtiB6jz-k1s7P29k90P4yPLMXIQx2Y3Z3-tsJkkcKZzDT6ylCH9mymGc46sXiB01D1VkoBt9gF4g_VDMpN6DMontKBBJy45wzJCOQGgQnbPj2cZcRJgV-5MdFJVfLJEGSmhLSKf86vVf7qdSm_r8y2KqdlPV-gk3SEWuGPTA07tyH2KV-qiBkZzUspqKIp25doF3Qsn7kbmlfv3AY2oLu8wGXifqhTnsve2x9tj5DzKHfZe-j7I7pHGixOXZwM0ml474wW7zzRxMWqkmVUH8pEv3mxXzzwsDz3G8vNJQtGI_t5CfmVnA',
+}
+
+headers = {
+    'accept': 'application/json',
+    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
+    'content-type': 'application/json',
+    'origin': 'https://www.hilokal.com',
+    'priority': 'u=1, i',
+    'referer': 'https://www.hilokal.com/',
+    'sec-ch-ua': '"Chromium";v="140", "Not=A?Brand";v="24", "Google Chrome";v="140"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36',
+    # 'cookie': '_hjSessionUser_2705208=eyJpZCI6IjdlZTUyNDRiLWMwMTktNTdhZC1hZTgxLTBmNDEyMTcwMjMzNSIsImNyZWF0ZWQiOjE3NTYwNDM3NTAyNzAsImV4aXN0aW5nIjp0cnVlfQ==; _ga=GA1.1.1367245081.1756042971; __gads=ID=eded4002ba3dc0c8:T=1756043799:RT=1756044632:S=ALNI_MYDCOW1q2hwU0wV2dzaj8IaEJbJIQ; __gpi=UID=0000118571550dd1:T=1756043799:RT=1756044632:S=ALNI_MayaYzVKlXD_wdDH6Y8qtGjIvQfAw; __eoi=ID=b4e687cbf17c5c29:T=1756043799:RT=1756044632:S=AA-AfjaKydIwmCI0r1FtabbiTp-Q; _ga_S97T9P1W73=GS2.1.s1756042970$o1$g1$t1756044798$j11$l0$h0; _ga_6HCL2GMXBV=GS2.1.s1756042971$o1$g1$t1756044798$j11$l0$h0; jwt=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMDU4OTc0IiwiaWF0IjoxNzU4NjM1MjM1fQ.NWKCUK9qtGONz8rzdL-Nv2haiggJLuK-8vFtiB6jz-k1s7P29k90P4yPLMXIQx2Y3Z3-tsJkkcKZzDT6ylCH9mymGc46sXiB01D1VkoBt9gF4g_VDMpN6DMontKBBJy45wzJCOQGgQnbPj2cZcRJgV-5MdFJVfLJEGSmhLSKf86vVf7qdSm_r8y2KqdlPV-gk3SEWuGPTA07tyH2KV-qiBkZzUspqKIp25doF3Qsn7kbmlfv3AY2oLu8wGXifqhTnsve2x9tj5DzKHfZe-j7I7pHGixOXZwM0ml474wW7zzRxMWqkmVUH8pEv3mxXzzwsDz3G8vNJQtGI_t5CfmVnA',
+}
+
+json_data = {
+    'emoji': '🔥',
+}
+
+response = requests.post('https://elb.hilokal.com/group-call/5360558/emoji', cookies=cookies, headers=headers, json=json_data)
+
+# Note: json_data will not be serialized by requests
+# exactly as it was in the original request.
+#data = '{"emoji":"🔥"}'.encode()
+#response = requests.post('https://elb.hilokal.com/group-call/5360558/emoji', cookies=cookies, headers=headers, data=data)
