@@ -3,7 +3,7 @@ headers = {
     'authority': 'elb.hilokal.com',
     'accept': 'application/json',
     'accept-language': 'en-US,en;q=0.9',
-    'authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ODI0MjciLCJ0cmFuc2NyaXB0aW9ucyI6dHJ1ZSwiaWF0IjoxNjg4MDU0MzEyfQ.qDTsrdcZgRTxHgM8RkMoGGIHrxY1_O32Tq6Q1nrFusdTOinh50r0vKJPrpeEDjQ5lN57bZ2Zfl2GLeDC1w0vaUvbaA59x7_4oJUIXffYEQjj2kvjYbOpfMRVEjesTiWcysOElnyFcTxv9kiU6kDQHFPaJcmaod6e_3basFrfQglqSneqR2C7M5wNRlLQaomxb_WphVHkqGWiXaUxCtYwOG57dm1gn3V0DMgqhteJoflQ9tu8P9ZbeRNemCoY0fEsCj5uGIoxegfP2SAh572XAs90a-lk1eAHM713ltmp7zdbtvdKbH2A_Dg_D3eBUYVtDzC3xytBnzhmzdf1mRnAXw',
+    'authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMTQxNDUyIiwiaWF0IjoxNzkxNDQzNzM1fQ.P4DlVAYPHnUPwmAUzeV3VO7dBDO1BdEaCP4zS1hkDWx16-uE8HsyQhgYPQbRe0-5HKZaETOaBURMGdmFwu2UqBLKi7xQRLKgWnyAjUfQ_D3gm0Ah_o9ECNRw9fVTcAMNkUEepYYhlHlIONTYl7bRKWORXIMes8jK4oTibOBEzX1pSZIBbTdwxAxkITckB7hwxPSIrPzOxynMNaIcM29jzIlP60vq9jQX8qiObUSulK4vobe-jWfcVUbsmZGwzDPmhJ37suauOmsG1ZBEG8gW8aqoJjyIMhs8rGEg008XEk84JXL9K8gM3kBh6186Z_BUuRPAmf99b2j9-ChVKU_0pg',
     'content-type': 'application/json',
     'origin': 'https://www.hilokal.com',
     'referer': 'https://www.hilokal.com/',
@@ -15,13 +15,18 @@ headers = {
     'sec-fetch-site': 'same-site',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
 }
+balance_response = requests.get('https://elb.hilokal.com/users/me', headers=headers)
+balance = balance_response.json().get('beans', 0)  # Adjust key name as needed
+
 json_data = {
-    'receiverId': 667333,
-    # 'receiverId': 247406,
+    'receiverId': 2537325,
     'type': 'send',
-    'groupCallId': 2244855,
+    'groupCallId': 4021503,
     'anonymous': False,
-    'message': 'not me lol',
-    'amount': -25,
+    'message': 'richie rich',
+    'amount': '69',
 }
+
 response = requests.post('https://elb.hilokal.com/users/beans', headers=headers, json=json_data)
+print("Status:", response.status_code)
+print("Response:", response.text)

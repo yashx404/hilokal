@@ -1,47 +1,41 @@
 import requests
-
 cookies = {
-    'jwt': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc5NTYzIiwidHJhbnNjcmlwdGlvbnMiOnRydWUsImlhdCI6MTc1MzQ1NTY3M30.OfS2tJUyxIwiHaDEoEc9kQFUaaLgYInMz6n8KNcNxpDlvFH_yojVgwSCn-0oNlwQAeiGErg5q4gx-pv7Cin15RiAqD5TOrlR659qrJnZV2_IJpH_PgcK8feMh-OUXZfphUxsRjfOvYUTpXIU3TShJJSAVyiMmTYktR8dDlg9V4bI1QChJ70Y6kwNsv0D4wYCzkyDNm_CQurJtApZjdukulJ_PPLX7TnKfGh8lzOyzVPzZxEwDRGmDSj1tBYYD5-AVvW_XTS8-G6AzpZav5hrNrK6FTDPOGwJv4ZvPiKE05E0YDTPFI50V1QPTROaoAZYGm4WqC9fsmqHMDz842KOww',
+    '_gcl_au': '1.1.1281012474.1787123063',
+    '_hjSessionUser_2705208': 'eyJpZCI6IjRjY2FkOTcyLWIxNGEtNTdkMC1iNzkwLTJiZmM2MzVhZDY4YiIsImNyZWF0ZWQiOjE3ODcxMjMwNjM1OTAsImV4aXN0aW5nIjp0cnVlfQ==',
+    'jwt': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMTQxNDUyIiwiaWF0IjoxNzg5MDE2NjE1fQ.iVEhY2NnfpmcKjemTxfkhseOV65mS4ZuXH5JQVIxDNTYhHAIE_38ruG30oKddJzN2Rs0L61AeAJuL4NFwngHKPMj7hQoAGO1VrNo-wAEE-ZrsgXudBOqOOcmskfTfYLePtTyXvma8QmWqByOnHIJgNaH-rgUPTbGptre46u8IHLmvXXqQ5ahAtTIGzTKSh3qceCpV-s3bF8QMmEnD-g-owar0Idtg6RX_BiAsRyYdvRkco5GyzagViEasq7XGqmgAJb_SlWa0azVYSdGgzlDXvdWIP54HApTg5sAlT1cztkOpr2k9AAmPAg0zZJbvoYH6FBURDGgpVzdJ1SASq09ow',
+    '_gid': 'GA1.2.416255240.1789533746',
+    '_hjSession_2705208': 'eyJpZCI6IjhkODVmYTNkLTAyMzEtNDFlOS04ZTE3LTNiMGEwNzFiNjBkMiIsImMiOjE3ODk2MjA3Mjk3ODQsInMiOjAsInIiOjAsInNiIjowLCJzciI6MCwic2UiOjAsImZzIjowLCJzcCI6MH0=',
+    '_ga': 'GA1.1.118388267.1787123063',
+    '_ga_S97T9P1W73': 'GS2.1.s1789620729$o58$g1$t1789621810$j52$l0$h0',
+    '_ga_6HCL2GMXBV': 'GS2.1.s1789620729$o57$g1$t1789621810$j52$l0$h0',
 }
-
 headers = {
-    'Host': 'elb.hilokal.com',
-    'Accept': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjAyOTciLCJpYXQiOjE3NTg1NTc2Mzh9.qpIQ8Adet5POwEf_wNN_wwPHgrFk-0MPKnf3B-xzEnWbBi5OyqARZm55Ltt8Ul-VXNd2FiEBelq5vQkt4hz_Qawb6CU67-f6_3bbrmp8ArSIQ-xYJ4lW-wOv_oFZj9b2Q0WhhQwHXlywxQMTCB3KRsNudSXL2Y9tcEqFP04DQjZHuRc9AnBOgaAduTFhxieJw8RR59Y-hjWycmRWWbD-zbbTBM-awGu6k7j-RmvSMJmY2k7L62Tbj7JcubTghrf14mpQ8rOFKsgi3K2yX_pH3yzTkE0t5lpfPkrhaQUUKdjdmCYeXK7niCVzY7uswzcirwGAFZGwyFQmdsnZgxPs8A',
-    'User-Agent': 'hilokal-consumer',
-    'Sentry-Trace': '5ee63914428948ca8d218cc6d374978c-90235ade9fa09ad3',
-    'Baggage': 'sentry-environment=production,sentry-public_key=af8f1acc78914590800392f7ab678595,sentry-trace_id=5ee63914428948ca8d218cc6d374978c',
-    'Content-Type': 'application/json',
-    # 'Content-Length': '181',
-    # 'Accept-Encoding': 'gzip, deflate, br',
-    # 'Cookie': 'jwt=undefined',
-}
-
+    'accept': 'application/json',
+    'accept-language': 'en-US,en;q=0.9',
+    'content-type': 'application/json',
+    'origin': 'https://www.hilokal.com',
+    'priority': 'u=1, i',
+    'referer': 'https://www.hilokal.com/',
+    'sec-ch-ua': '"Chromium";v="152", "Not?A_Brand";v="24", "Google Chrome";v="152"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-site',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36',
+    }
 json_data = {
-    #'topic': 'for a while',
+    'topic': 'Working',
     #'description': '',
-    'transcriptionLang': 'ru',
-    #'targetLevel': 0,
+    'transcriptionLang': 'en',
+    'targetLevel': 4,
     #'visibility': 'public',
-    #'allowReview': True,
+    'allowReview': False,
     #'allowPaid': False,
-    'participantLimit': 2,
-    'price': 2,
-    #"shareCount": 69,
-    #"acceptSpeakerRequests": False,
+    #'participantLimit': 8,
+    #'price': 2,
+    "shareCount": 69,
+    "acceptSpeakerRequests": True,
     "groupChatAccess": "speaker",
 }
-while True:
-    response = requests.put(
-    'https://elb.hilokal.com/group-call/5360544',
-    cookies=cookies,
-    headers=headers,
-    json=json_data,
-    verify=False,
-    )
-time.sleep(1)
-
-# Note: json_data will not be serialized by requests
-# exactly as it was in the original request.
-#data = '{"topic":"heeeeeeeeeeeeeeeeeee","description":"","transcriptionLang":"ru","targetLevel":0,"visibility":"private","allowReview":true,"allowPaid":false,"participantLimit":7,"price":0}'
-#response = requests.put('https://elb.hilokal.com/group-call/5352079', cookies=cookies, headers=headers, data=data, verify=False)
+response = requests.put('https://elb.hilokal.com/group-call/5996784',cookies=cookies,headers=headers,json=json_data,verify=False,)

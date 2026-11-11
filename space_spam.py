@@ -8,7 +8,7 @@ cookies = {
     '__eoi': 'ID=b4e687cbf17c5c29:T=1756043799:RT=1756044632:S=AA-AfjaKydIwmCI0r1FtabbiTp-Q',
     '_ga_S97T9P1W73': 'GS2.1.s1756042970$o1$g1$t1756044798$j11$l0$h0',
     '_ga_6HCL2GMXBV': 'GS2.1.s1756042971$o1$g1$t1756044798$j11$l0$h0',
-    'jwt': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMDc5NTYzIiwidHJhbnNjcmlwdGlvbnMiOnRydWUsImlhdCI6MTc1MzQ1NTY3M30.OfS2tJUyxIwiHaDEoEc9kQFUaaLgYInMz6n8KNcNxpDlvFH_yojVgwSCn-0oNlwQAeiGErg5q4gx-pv7Cin15RiAqD5TOrlR659qrJnZV2_IJpH_PgcK8feMh-OUXZfphUxsRjfOvYUTpXIU3TShJJSAVyiMmTYktR8dDlg9V4bI1QChJ70Y6kwNsv0D4wYCzkyDNm_CQurJtApZjdukulJ_PPLX7TnKfGh8lzOyzVPzZxEwDRGmDSj1tBYYD5-AVvW_XTS8-G6AzpZav5hrNrK6FTDPOGwJv4ZvPiKE05E0YDTPFI50V1QPTROaoAZYGm4WqC9fsmqHMDz842KOww',
+    'jwt': 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMTQxNDUyIiwiaWF0IjoxNzc3MzUzNTc4fQ.yMhR4bLm8H0LYnQhn9jFpnm-ybzCJR77fPAgf_QOGD3WECb-vYMkfls8Kfa51gn3s-H372mBnPirlHPRZbTRPBL_JwJkZwpfhvIzzAvQ8Kc_4KirSxDvrYk-AOx8jReZQQLuotUnajpjOH7ktQbuSZuB2FbwA3jqsqrojWuKaye1ffePQJnOzp4C91GVVnPNA1NY4_pt7CuBKoW69HOBDHKdHkxGa9oVzi6egaz1hYnskD9OgeYw5ZEglStvi03UEUFGwH3eweAZlkvqCC1687Y-d0KZYyK2q53n9culapOQ5-TorLwzh0NbnxPxBVgl_VHDGLZwqNR75iwqXosp6w',
 }
 
 headers = {
@@ -33,4 +33,6 @@ json_data = {
     'parentId': None,
     'image': None,
 }
-response = requests.post('https://elb.hilokal.com/group-call/5360544/messages', cookies=cookies, headers=headers, json=json_data)
+while True:
+     response = requests.post('https://elb.hilokal.com/group-call/5766340/messages', cookies=cookies, headers=headers, json=json_data)
+time.sleep(1)
