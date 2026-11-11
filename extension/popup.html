@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Hilokal Locations</title>
+  <style>
+    :root {
+      --bg:        #ffffff;
+      --bg-soft:   #f7f8fa;
+      --bg-sunk:   #f0f2f5;
+      --border:    #e6e8eb;
+      --text:      #1a1d21;
+      --text-dim:  #6b7280;
+      --text-mute: #9aa1ab;
+      --accent:    #4285f4;
+      --accent-d:  #3367d6;
+      --green:     #0a7c3e;
+      --red:       #d93636;
+      --amber:     #d97706;
+      --m:         #3b82f6;
+      --f:         #ec4899;
+      --shadow:    0 1px 2px rgba(0,0,0,.04);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:#1c2130; --bg-soft:#0a0a0a; --bg-sunk:#22262c; --border:#2c313a;
+        --text:#ffffff; --text-dim:#ffffff; --text-mute:#9c9ca3;
+        --shadow:0 1px 2px rgba(0,0,0,.3);
+      }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      width: 380px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-soft);
+    }
+    .logo { font-size: 16px; }
+    header h1 { font-size: 13.5px; font-weight: 650; letter-spacing: -.2px; }
+    #count {
+      margin-left: auto; font-size: 11.5px; font-weight: 600;
+      color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent);
+      padding: 2px 9px; border-radius: 999px;
+    }
+
+    /* ── Tab bar ── */
+    .tabs {
+      display: flex; border-bottom: 1px solid var(--border);
+      background: var(--bg-soft); position: sticky; top: 0; z-index: 5;
+    }
+    .tab {
+      flex: 1; text-align: center; padding: 9px 4px; cursor: pointer;
+      font-size: 11.5px; font-weight: 600; color: var(--text-dim);
+      border-bottom: 2px solid transparent; transition: .12s;
+      user-select: none;
+    }
+    .tab:hover { color: var(--accent); }
+    .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    /* ── Section padding ── */
+    .pad { padding: 12px 14px; }
+    .label { font-size: 11px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
+
+    /* ── Buttons ── */
+    .btn {
+      font-size: 12px; font-weight: 600; padding: 7px 12px; border-radius: 7px;
+      cursor: pointer; white-space: nowrap; flex-shrink: 0;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      transition: .12s;
+    }
+    .btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .btn:disabled { opacity: .5; cursor: default; }
+    .btn-fill  { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-fill:hover:not(:disabled) { background: var(--accent-d); color: #fff; }
+    .btn-green { background: var(--green); border-color: var(--green); color: #fff; }
+    .btn-green:hover:not(:disabled) { filter: brightness(1.1); color: #fff; }
+    .btn-danger { color: var(--red); border-color: var(--red); }
+    .btn-danger:hover:not(:disabled) { background: color-mix(in srgb, var(--red) 8%, transparent); color: var(--red); }
+    .btn-amber { color: var(--amber); border-color: var(--amber); }
+    .btn-amber.active { background: var(--amber); color: #fff; }
+    .btn-block { width: 100%; }
+
+    /* ── Inputs ── */
+    input[type=text], input[type=number], input[type=date], input[type=file], select {
+      flex: 1; min-width: 0; font-size: 12px; padding: 6px 8px;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: var(--bg); color: var(--text); outline: none;
+    }
+    input:focus, select:focus { border-color: var(--accent); }
+    input[type=file] { padding: 4px; }
+    input[type=number] { width: 64px; flex: 0 0 auto; }
+    .row { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .row:last-child { margin-bottom: 0; }
+    .row label { font-size: 11.5px; color: var(--text-dim); flex-shrink: 0; }
+    .chk { display: inline-flex; align-items: center; gap: 3px; font-size: 11px; color: var(--text-dim); flex-shrink: 0; }
+    .divider { height: 1px; background: var(--border); margin: 10px 0; }
+
+    /* ── Status ── */
+    .status { font-size: 11px; min-height: 15px; color: var(--text-dim); margin-top: 6px; }
+    .status.ok { color: var(--green); } .status.err { color: var(--red); }
+
+    /* ── Emoji row ── */
+    .emoji-row { display: flex; flex-wrap: wrap; gap: 4px; flex: 1; }
+    .emoji-row button {
+      font-size: 16px; width: 30px; height: 30px; border-radius: 7px;
+      border: 1px solid var(--border); background: var(--bg); cursor: pointer; line-height: 1;
+    }
+    .emoji-row button:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+
+    /* ── Search / stats ── */
+    #search {
+      width: 100%; padding: 7px 11px; font-size: 13px;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--bg-sunk); color: var(--text); outline: none;
+    }
+    #search:focus { border-color: var(--accent); background: var(--bg); }
+    #stats { margin-top: 8px; font-size: 11px; color: var(--text-dim); line-height: 1.5; font-variant-numeric: tabular-nums; }
+    #stats b { color: var(--text); font-weight: 700; }
+    #filters { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+    .fchip {
+      font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text-dim); cursor: pointer;
+    }
+    .fchip:hover { border-color: var(--accent); color: var(--accent); }
+    .fchip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    #dna-wrap { margin-top: 8px; }
+    #dna { display: flex; height: 9px; border-radius: 5px; overflow: hidden; background: var(--bg-sunk); }
+    #dna .seg { height: 100%; }
+    #dna-legend { display: flex; flex-wrap: wrap; gap: 3px 8px; margin-top: 5px; font-size: 10px; color: var(--text-dim); }
+    #dna-legend span { display: inline-flex; align-items: center; gap: 3px; }
+    #dna-legend i { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+    #sortrow { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 11px; color: var(--text-dim); }
+    #sort { font-size: 11px; padding: 3px 6px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer; }
+    .hint { font-size: 10px; color: var(--text-mute); }
+
+    /* ── Participant list ── */
+    #list { list-style: none; max-height: 380px; overflow-y: auto; }
+    #list li { display: flex; flex-direction: column; align-items: stretch; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    #list li:hover { background: var(--bg-soft); }
+    .rowmain { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      object-fit: cover; background: var(--bg-sunk);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 14px; color: #fff;
+    }
+    .pinfo { flex: 1; min-width: 0; }
+    .prow1 { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .name { font-weight: 600; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+    .prow2 { display: flex; align-items: center; gap: 8px; margin-top: 2px; font-size: 11.5px; color: var(--text-dim); }
+    .city { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .langs { flex-shrink: 0; font-variant: small-caps; letter-spacing: .3px; }
+    .time { font-size: 10.5px; color: var(--text-mute); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+    .tray { display: none; align-items: center; flex-wrap: wrap; gap: 6px; padding: 8px 0 2px 46px; }
+    .tray.open { display: flex; }
+    .tbtn {
+      font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text); cursor: pointer;
+    }
+    .tbtn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+    .tbtn:disabled { opacity: .6; cursor: default; }
+    .tbtn.join { background: var(--green); border-color: var(--green); color: #fff; }
+    .tbtn.join:hover { filter: brightness(1.1); color: #fff; }
+    .tbtn.join.priv { background: var(--text-mute); border-color: var(--text-mute); cursor: default; }
+    .tray-status { font-size: 10.5px; color: var(--text-dim); }
+    .ploc { font-size: 11px; color: var(--green); font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+
+    /* chips */
+    .chip {
+      font-size: 10px; font-weight: 700; line-height: 1;
+      padding: 3px 6px; border-radius: 5px; flex-shrink: 0;
+      background: var(--bg-sunk); color: var(--text-dim);
+    }
+    .chip.g-m { background: color-mix(in srgb, var(--m) 16%, transparent); color: var(--m); }
+    .chip.g-f { background: color-mix(in srgb, var(--f) 16%, transparent); color: var(--f); }
+    .chip.g-o { background: color-mix(in srgb, #8b5cf6 16%, transparent); color: #8b5cf6; }
+    .chip.lvl { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent); }
+    .chip.host { background: color-mix(in srgb, var(--amber) 18%, transparent); color: var(--amber); }
+    .chip.new { background: color-mix(in srgb, var(--green) 16%, transparent); color: var(--green); }
+    .chip.prem { background: color-mix(in srgb, #eab308 22%, transparent); color: #b8860b; }
+    .chip.bday { background: color-mix(in srgb, var(--f) 14%, transparent); }
+    .chip.tchr { background: color-mix(in srgb, #06b6d4 18%, transparent); color: #0891b2; }
+
+    #empty { padding: 28px 14px; font-size: 12.5px; color: var(--text-mute); text-align: center; }
+
+    /* ── Footer ── */
+    footer { display: flex; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--bg-soft); }
+    footer button {
+      flex: 1; font-size: 12px; font-weight: 500; padding: 7px 10px;
+      border: 1px solid var(--border); border-radius: 7px; background: var(--bg); color: var(--text); cursor: pointer;
+    }
+    footer button:hover { background: var(--bg-sunk); }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="logo">🌍</span>
+    <h1>Hilokal MOD</h1>
+    <span id="count"></span>
+  </header>
+
+  <!-- Tab navigation -->
+  <nav class="tabs">
+    <div class="tab active" data-tab="table">Table</div>
+    <div class="tab" data-tab="people">People</div>
+    <div class="tab" data-tab="actions">Actions</div>
+    <div class="tab" data-tab="tools">Tools</div>
+    <div class="tab" data-tab="messages">Messages</div>
+  </nav>
+
+  <!-- ── TABLE tab: seat requests ── -->
+  <div class="panel active" id="panel-table">
+    <div class="pad">
+      <div class="row">
+        <span style="font-size:12px;color:var(--text-dim);flex:1">Call ID: <span id="call-id" style="font-weight:700;color:var(--text)">—</span></span>
+        <button class="btn btn-fill" id="btn-seat">Request Seat</button>
+      </div>
+      <div class="row" style="gap:6px">
+        <button class="btn" data-n="1" style="flex:1">×1</button>
+        <button class="btn" data-n="5" style="flex:1">×5</button>
+        <button class="btn" data-n="10" style="flex:1">×10</button>
+        <button class="btn" data-n="20" style="flex:1">×20</button>
+      </div>
+      <div id="seat-status" class="status"></div>
+    </div>
+  </div>
+
+  <!-- ── PEOPLE tab: search, filters, list ── -->
+  <div class="panel" id="panel-people">
+    <div class="pad">
+      <input id="search" type="search" placeholder="Search by name…" autocomplete="off" spellcheck="false">
+      <div id="stats"></div>
+      <div id="dna-wrap">
+        <div id="dna"></div>
+        <div id="dna-legend"></div>
+      </div>
+      <div id="filters">
+        <button class="fchip active" data-f="all">All</button>
+        <button class="fchip" data-f="host">👑 Hosts</button>
+        <button class="fchip" data-f="new">🆕 New</button>
+        <button class="fchip" data-f="premium">⭐ Premium</button>
+        <button class="fchip" data-f="teacher">🎓 Teacher</button>
+        <button class="fchip" data-f="male">♂</button>
+        <button class="fchip" data-f="female">♀</button>
+      </div>
+      <div id="sortrow">
+        <span>Sort</span>
+        <select id="sort">
+          <option value="recent">Most recent</option>
+          <option value="level-desc">Level ↓</option>
+          <option value="level-asc">Level ↑</option>
+          <option value="name">Name A–Z</option>
+          <option value="country">Country</option>
+        </select>
+        <span class="hint">Tap a person for locate · join · copy</span>
+      </div>
+    </div>
+    <ul id="list"></ul>
+    <p id="empty"></p>
+  </div>
+
+  <!-- ── ACTIONS tab: visible-to-others actions ── -->
+  <div class="panel" id="panel-actions">
+    <div class="pad">
+      <div class="label">React</div>
+      <div class="row">
+        <div id="emoji-quick" class="emoji-row"></div>
+      </div>
+      <div id="emoji-status" class="status"></div>
+
+      <div class="divider"></div>
+
+      <div class="label">Bean bomb</div>
+      <div class="row">
+        <input type="number" id="bomb-amount" min="1" value="1">
+        <button class="btn btn-fill" id="btn-bomb">Send to table</button>
+        <label class="chk"><input type="checkbox" id="bomb-anon">anon</label>
+      </div>
+      <div class="row">
+        <input type="text" id="bomb-msg" placeholder="Optional message (visible to all)">
+      </div>
+      <div id="bomb-status" class="status"></div>
+
+    </div>
+  </div>
+
+  <!-- ── TOOLS tab: birthday + image ── -->
+  <div class="panel" id="panel-tools">
+    <div class="pad">
+      <div class="label">Birthday</div>
+      <div class="row">
+        <input type="date" id="bday-input">
+        <button class="btn btn-fill" id="btn-bday-set">Set</button>
+        <button class="btn btn-danger" id="btn-bday-remove">Remove</button>
+      </div>
+      <div class="row">
+        <button class="btn btn-amber btn-block" id="btn-bday-flicker">Flicker (Set ↔ Unset)</button>
+      </div>
+      <div id="bday-status" class="status"></div>
+
+      <div class="divider"></div>
+
+      <div class="label">Image to chat</div>
+      <div class="row">
+        <input type="file" id="img-file" accept="image/*">
+        <button class="btn btn-green" id="btn-img-upload">Send</button>
+      </div>
+      <div id="img-status" class="status"></div>
+    </div>
+  </div>
+
+  <!-- Messages tab -->
+  <div class="panel" id="panel-messages">
+    <div class="pad">
+      <div class="row"><span style="flex:1;color:var(--text-dim)">Room: <b id="messages-room">—</b></span><button class="btn" id="btn-messages-refresh">Refresh</button></div>
+      <div id="messages-summary" class="status">Join a group room to detect messages.</div>
+      <div class="row"><button class="btn btn-danger btn-block" id="btn-delete-all" disabled>Delete all detected messages</button></div>
+      <div class="row"><button class="btn btn-block" id="btn-delete-own" disabled>Delete my detected messages</button></div>
+      <div class="row"><button class="btn btn-amber btn-block" id="btn-stop-delete" disabled>Stop deletion</button></div>
+      <div class="hint">Delete All attempts every detected message in this room, regardless of sender. Hilokal must authorize your account to delete each message.</div>
+      <div id="messages-status" class="status"></div>
+    </div>
+    <ul id="messages-list" style="list-style:none;max-height:340px;overflow-y:auto"></ul>
+  </div>
+
+  <footer>
+    <button id="btn-copy">Copy CSV</button>
+    <button id="btn-clear">Clear</button>
+  </footer>
+  <script src="popup.js"></script>
+</body>
+</html>
