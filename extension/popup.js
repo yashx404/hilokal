@@ -539,70 +539,194 @@ btnFlicker.addEventListener('click', () => {
     }
 });
 
-// ── Image upload ──────────────────────────────────────────────────────────────
+
+
+// ── Image Upload ─────────────────────────────────────────────────────────────
 
 const imgFileInput = document.getElementById('img-file');
 const btnImgUpload = document.getElementById('btn-img-upload');
-const imgStatus    = document.getElementById('img-status');
+const imgStatus = document.getElementById('img-status');
+
+// Fetch the actual room ID from the extension's message system
+function getCurrentRoomId() {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage(
+            { action: 'get_messages' },
+            (res) => {
+                if (chrome.runtime.lastError) {
+                    reject(new Error(chrome.runtime.lastError.message));
+                    return;
+                }
+
+                if (!res) {
+                    reject(new Error('No response from message system.'));
+                    return;
+                }
+
+                const roomId = String(res.roomId || '').trim();
+
+                if (!/^\d+$/.test(roomId)) {
+                    reject(new Error(
+                        'No valid room detected. Join a table and refresh messages.'
+                    ));
+                    return;
+                }
+
+                resolve(roomId);
+            }
+        );
+    });
+}
 
 function setImgStatus(ok, msg) {
     imgStatus.textContent = msg;
     imgStatus.className = ok ? 'ok' : 'err';
-    if (ok) setTimeout(() => { imgStatus.textContent = ''; imgStatus.className = ''; }, 4000);
+
+    if (ok) {
+        setTimeout(() => {
+            imgStatus.textContent = '';
+            imgStatus.className = '';
+        }, 4000);
+    }
 }
 
 btnImgUpload.addEventListener('click', async () => {
-    const file   = imgFileInput.files[0];
-    const callId = callIdSpan.textContent;
+    const file = imgFileInput.files[0];
 
-    if (!file)                    { setImgStatus(false, 'Pick an image first.'); return; }
-    if (!callId || callId === '—') { setImgStatus(false, 'No call ID — join a table first.'); return; }
+    if (!file) {
+        setImgStatus(false, 'Pick an image first.');
+        return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+        setImgStatus(false, 'Please select a valid image.');
+        return;
+    }
 
     btnImgUpload.disabled = true;
-    setImgStatus(true, 'Getting upload credentials…');
+
+    let bitmap;
 
     try {
-        // Step 1: get S3 presigned credentials
-        const authRes = await fetch('https://elb.hilokal.com/s3-upload-auth', {
-            method: 'POST',
-            credentials: 'include',
-            headers: { 'accept': 'application/json', 'content-type': 'application/json' },
-            referrer: 'https://www.hilokal.com/',
-            body: JSON.stringify({ pathname: file.name, contentType: file.type }),
-        });
-        if (!authRes.ok) throw new Error(`Auth failed: ${authRes.status}`);
+        // STEP 0: Get the correct Group Call ID
+        setImgStatus(true, 'Detecting current room…');
+
+        const callId = await getCurrentRoomId();
+
+        console.log('[Image Upload] Detected Group Call ID:', callId);
+
+        // Get actual image dimensions
+        bitmap = await createImageBitmap(file);
+
+        const imageWidth = bitmap.width;
+        const imageHeight = bitmap.height;
+
+        bitmap.close();
+        bitmap = null;
+
+        // STEP 1: Get S3 upload credentials
+        setImgStatus(true, 'Getting upload credentials…');
+
+        const authRes = await fetch(
+            'https://elb.hilokal.com/s3-upload-auth',
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    pathname: file.name,
+                    contentType: file.type
+                })
+            }
+        );
+
+        if (!authRes.ok) {
+            throw new Error(
+                `Auth failed (${authRes.status}): ${await authRes.text()}`
+            );
+        }
+
         const auth = await authRes.json();
 
-        // Step 2: upload file to S3
+        if (!auth.url || !auth.fields || !auth.fields.key) {
+            throw new Error('Invalid S3 credentials received.');
+        }
+
+        // STEP 2: Upload image to S3
         setImgStatus(true, 'Uploading image…');
+
         const form = new FormData();
-        Object.entries(auth.fields).forEach(([k, v]) => form.append(k, v));
+
+        Object.entries(auth.fields).forEach(([key, value]) => {
+            form.append(key, value);
+        });
+
         form.append('file', file);
 
-        const s3Res = await fetch(auth.url, { method: 'POST', body: form });
-        if (s3Res.status !== 204) throw new Error(`S3 upload failed: ${s3Res.status}`);
-
-        const imageUrl = `${auth.url}/${auth.fields.key}`;
-
-        // Step 3: post image message to table chat
-        setImgStatus(true, 'Sending to chat…');
-        const msgRes = await fetch(`https://elb.hilokal.com/group-call/${callId}/messages`, {
+        const s3Res = await fetch(auth.url, {
             method: 'POST',
-            credentials: 'include',
-            headers: { 'accept': 'application/json', 'content-type': 'application/json' },
-            referrer: 'https://www.hilokal.com/',
-            body: JSON.stringify({ body: '', type: 'image', parentId: null, image: imageUrl, imageWidth: 1200, imageHeight: 1800 }),
+            body: form
         });
-        if (!msgRes.ok) throw new Error(`Message failed: ${msgRes.status}`);
 
-        setImgStatus(true, '✓ Image sent to chat!');
+        if (!s3Res.ok) {
+            throw new Error(
+                `S3 upload failed (${s3Res.status}): ${await s3Res.text()}`
+            );
+        }
+
+        // STEP 3: Construct image URL
+        const imageUrl = `${auth.url.replace(/\/+$/, '')}/${auth.fields.key}`;
+
+        console.log('[Image Upload] Image URL:', imageUrl);
+
+        // STEP 4: Send image to the CORRECT room
+        setImgStatus(true, `Sending image to room ${callId}…`);
+
+        const msgRes = await fetch(
+            `https://elb.hilokal.com/group-call/${encodeURIComponent(callId)}/messages`,
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'accept': 'application/json',
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    body: '',
+                    type: 'image',
+                    parentId: null,
+                    image: imageUrl,
+                    imageWidth: imageWidth,
+                    imageHeight: imageHeight
+                })
+            }
+        );
+
+        if (!msgRes.ok) {
+            throw new Error(
+                `Message failed (${msgRes.status}): ${await msgRes.text()}`
+            );
+        }
+
+        console.log('[Image Upload] Successfully sent to room:', callId);
+
+        setImgStatus(true, `✓ Image sent to room ${callId}!`);
+
         imgFileInput.value = '';
+
     } catch (err) {
+        console.error('[Image Upload Error]', err);
         setImgStatus(false, `✗ ${err.message}`);
+
     } finally {
+        if (bitmap) bitmap.close();
         btnImgUpload.disabled = false;
     }
 });
+
 
 // ── Clear ─────────────────────────────────────────────────────────────────────
 
@@ -743,8 +867,12 @@ function startMessageDeletion(mode) {
         ? currentMessages.filter(m => Number(m.userId) === MY_MESSAGE_USER_ID)
         : currentMessages;
     const messageIds = [...new Set(selected
-        .filter(m => m.id != null && /^\d+$/.test(String(m.id)))
-        .map(m => String(m.id)))];
+    .filter(m => m.id != null && /^\d+$/.test(String(m.id)))
+    .sort((a, b) => {
+        return Number(b.id) - Number(a.id);
+    })
+    .map(m => String(m.id)))]; 
+        
     if (!messageIds.length) {
         messagesStatus.textContent = 'No valid detected message IDs to delete.';
         return;
